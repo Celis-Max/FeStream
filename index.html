@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Subir lista M3U</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    form {
+      max-width: 400px;
+      margin: 0 auto;
+      background: #222;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    input, button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 1em;
+    }
+    input[type="file"] {
+      background-color: #000;
+      color: white;
+    }
+    button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+<body>
+  <h1>Sube tu lista M3U</h1>
+  <form id="uploadForm">
+    <label for="tvCode">Código de tu TV:</label>
+    <input type="text" id="tvCode" name="tvCode" required placeholder="Ej: ABCD1234" />
+
+    <label for="m3uFile">Archivo M3U:</label>
+    <input type="file" id="m3uFile" name="m3uFile" accept=".m3u,.m3u8" required />
+
+    <button type="submit">Subir</button>
+  </form>
+
+  <script>
+    const form = document.getElementById('uploadForm');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const code = document.getElementById('tvCode').value.trim();
+      const file = document.getElementById('m3uFile').files[0];
+      if (!file || !code) return alert("Código y archivo requeridos");
+
+      const formData = new FormData();
+      formData.append("tvCode", code);
+      formData.append("file", file);
+
+      try {
+        const response = await fetch("https://tudominio.com/api/upload", {
+          method: "POST",
+          body: formData
+        });
+
+        if (response.ok) {
+          alert("¡Lista subida con éxito!");
+        } else {
+          alert("Error al subir la lista.");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Error en la conexión con el servidor.");
+      }
+    });
+  </script>
+</body>
+</html>
